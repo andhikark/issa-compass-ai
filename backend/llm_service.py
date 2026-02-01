@@ -25,12 +25,10 @@ class LLMService:
     def generate_response(self, prompt: str, user_message: str, provider: Optional[str] = None) -> Dict:
         """Generate a response using specified LLM provider"""
         if provider is None:
-            provider = os.getenv('DEFAULT_LLM_PROVIDER', 'claude')
+            provider = os.getenv('DEFAULT_LLM_PROVIDER', 'openai')
         
         try:
-            if provider == 'claude' and self.anthropic_client:
-                return self._call_claude(prompt, user_message)
-            elif provider == 'openai' and self.openai_client:
+            if provider == 'openai' and self.openai_client:
                 return self._call_openai(prompt, user_message)
             elif provider == 'google' and self.google_configured:
                 return self._call_google(prompt, user_message)
@@ -38,22 +36,6 @@ class LLMService:
                 raise ValueError(f"Provider {provider} not available")
         except Exception as e:
             raise Exception(f"LLM API call failed: {str(e)}")
-    
-    def _call_claude(self, prompt: str, user_message: str) -> Dict:
-        """Call Claude API"""
-        response = self.anthropic_client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1024,
-            system=prompt,
-            messages=[{"role": "user", "content": user_message}]
-        )
-        
-        reply_text = response.content[0].text
-        
-        try:
-            return json.loads(reply_text)
-        except json.JSONDecodeError:
-            return {"reply": reply_text}
     
     def _call_openai(self, prompt: str, user_message: str) -> Dict:
         """Call OpenAI API"""

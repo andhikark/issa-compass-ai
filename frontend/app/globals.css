@@ -1,0 +1,14 @@
+/* Tailwind v4 global import */
+@import "tailwindcss";
+
+/* Optional: sane defaults */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+}
